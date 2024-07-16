@@ -74,4 +74,8 @@ def unarchive_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
 
 def _unarchive_files(archive_file_path: pathlib.Path):
     unarchive_file_path = archive_file_path.with_suffix("")
+
+    print(
+        f"Unarchiving data from {archive_file_path=} and saving to {unarchive_file_path=}"
+    )
     shutil.unpack_archive(archive_file_path, unarchive_file_path)
