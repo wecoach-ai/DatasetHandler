@@ -7,10 +7,11 @@ def cli():
 
 
 @cli.command()
+@click.argument("download_url", required=True)
 @click.argument("path", required=True)
-@click.option("--hard/--no-hard", default=False)
-def download(path, hard):
-    click.echo(f"Downlaoding the data set at {path}")
+@click.option("--hard/--no-hard", default=False, help="If the directory contents ahve to be removed before download (default=--no-hard)")
+def download(download_url, path, hard):
+    click.echo(f"Downlaoding the data set from {download_url} at {path}")
     click.echo(f"This command will wipe up the current dataset {hard}")
 
 
