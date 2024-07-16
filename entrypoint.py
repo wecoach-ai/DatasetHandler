@@ -14,7 +14,9 @@ def cli():
 def download(download_url, path):
     dwnld.setup_dataset_directory(path)
     meta_data = dwnld.generate_download_meta_data(path, download_url)
+
     dwnld.download_multiprocess(meta_data)
+    dwnld.unarchive_multiprocess(meta_data)
 
 
 @cli.command()

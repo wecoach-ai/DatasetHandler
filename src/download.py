@@ -62,3 +62,20 @@ def _download_files(data: typing.Tuple[str, pathlib.Path]):
     with httpx.stream("GET", url) as response, open(file_path, "wb") as fp:
         for data in response.iter_bytes():
             fp.write(data)
+
+
+def unarchive_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        executor.map(
+            _unarchive_files,
+            [item for item in list(meta_data.values()) if str(item).endswith(".zip")],
+        )
+
+
+def _unarchive_files(archive_file_path: pathlib.Path):
+    unarchive_file_path = archive_file_path.with_suffix("")
+
+    print(
+        f"Unarchiving data from {archive_file_path=} and saving to {unarchive_file_path=}"
+    )
+    shutil.unpack_archive(archive_file_path, unarchive_file_path)
