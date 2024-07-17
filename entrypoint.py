@@ -6,7 +6,7 @@ from src.download import (
     setup_dataset_directory,
     unarchive_multiprocess,
 )
-from src.extract import extract_multiprocess, get_file_paths
+from src.extract import extract_multiprocess, generate_extract_meta_data
 
 
 @click.group()
@@ -28,8 +28,8 @@ def download(download_url, path):
 @cli.command()
 @click.argument("path", required=True)
 def extract(path):
-    file_paths = get_file_paths(path)
-    extract_multiprocess(file_paths)
+    meta_data = generate_extract_meta_data(path)
+    extract_multiprocess(meta_data)
 
 
 if __name__ == "__main__":
