@@ -7,6 +7,15 @@ import cv2
 
 
 def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
+    """
+    Generate metadata for extracting images from video files.
+
+    Args:
+        path (str): The local directory path containing the dataset.
+
+    Returns:
+        typing.List[pathlib.Path]: A list of video file paths to extract images from.
+    """
     dataset_directory = pathlib.Path(path)
     train_video_directory = dataset_directory / "train" / "videos"
     test_video_directory = dataset_directory / "test" / "videos"
@@ -25,6 +34,14 @@ def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
 def extract_multiprocess(
     file_lists: typing.List[pathlib.Path], scope: str, frame_cutoff: int
 ):
+    """
+    Extract images from video files using multiprocessing.
+
+    Args:
+        file_lists (typing.List[pathlib.Path]): A list of video file paths to extract images from.
+        scope (str): The type of image extraction ("all", "selected", "smooth").
+        frame_cutoff (int): The cutoff frames for selected/smooth type extraction.
+    """
     with concurrent.futures.ProcessPoolExecutor() as executor:
         match scope:
             case "all":
@@ -44,6 +61,12 @@ def extract_multiprocess(
 
 
 def _extract_all_images(video_file_path: pathlib.Path):
+    """
+    Extract all frames from a video file and save them as images.
+
+    Args:
+        video_file_path (pathlib.Path): The path to the video file.
+    """
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
@@ -63,6 +86,13 @@ def _extract_all_images(video_file_path: pathlib.Path):
 
 
 def _extract_selected_images(video_file_path: pathlib.Path, frame_cutoff: int):
+    """
+    Extract selected frames from a video file based on annotations (event_markup.json) and save them as images.
+
+    Args:
+        video_file_path (pathlib.Path): The path to the video file.
+        frame_cutoff (int): The number of frames to include before and after each annotated event.
+    """
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
@@ -93,6 +123,14 @@ def _extract_selected_images(video_file_path: pathlib.Path, frame_cutoff: int):
 
 
 def _extract_smooth_images(video_file_path: pathlib.Path, frame_cutoff: int):
+    """
+    Extract smooth labelled frames from a video file around annotated events and save them as images.
+
+    Args:
+        video_file_path (pathlib.Path): The path to the video file.
+        frame_cutoff (int): The number of frames to include before and after each annotated event,
+                            with a multiplier based on the event type.
+    """
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
@@ -123,6 +161,16 @@ def _extract_smooth_images(video_file_path: pathlib.Path, frame_cutoff: int):
 def _get_frame_indices_selected(
     file_path: pathlib.Path, num_frames: int
 ) -> typing.Set[int]:
+    """
+    Get the set of frame indices to extract based on annotations.
+
+    Args:
+        file_path (pathlib.Path): The path to the JSON file containing event annotations.
+        num_frames (int): The number of frames to include before and after each annotated event.
+
+    Returns:
+        typing.Set[int]: A set of frame indices to extract.
+    """
     result = set()
 
     with open(file_path, "r") as fp:
@@ -139,6 +187,17 @@ def _get_frame_indices_selected(
 def _get_frame_indices_smooth(
     file_path: pathlib.Path, num_frames: int
 ) -> typing.Set[int]:
+    """
+    Get the set of frame indices to extract around annotated events with smoothing.
+
+    Args:
+        file_path (pathlib.Path): The path to the JSON file containing event annotations.
+        num_frames (int): The number of frames to include before and after each annotated event,
+                          with a multiplier (2 if "empty_event", otherwise 1) based on the event type.
+
+    Returns:
+        typing.Set[int]: A set of frame indices to extract.
+    """
     result = set()
 
     with open(file_path, "r") as fp:

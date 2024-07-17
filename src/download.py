@@ -7,6 +7,12 @@ import httpx
 
 
 def setup_dataset_directory(path: str):
+    """
+    Set up the necessary directory structure for the dataset.
+
+    Args:
+        path (str): The local directory path for the dataset.
+    """
     directory = pathlib.Path(path)
     if not directory.exists():
         directory.mkdir(parents=True)
@@ -23,6 +29,16 @@ def setup_dataset_directory(path: str):
 
 
 def generate_download_meta_data(path: str, url: str) -> typing.Dict[str, pathlib.Path]:
+    """
+    Generate metadata for downloading dataset files.
+
+    Args:
+        path (str): The local directory path for the dataset.
+        url (str): The base URL for downloading dataset files.
+
+    Returns:
+        typing.Dict[str, pathlib.Path]: A dictionary mapping download URLs to local file paths.
+    """
     training_annotations = {
         f"{url}/game_{i}.zip": pathlib.Path(path)
         / "train"
@@ -51,11 +67,23 @@ def generate_download_meta_data(path: str, url: str) -> typing.Dict[str, pathlib
 
 
 def download_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
+    """
+    Download files using multiprocessing.
+
+    Args:
+        meta_data (typing.Dict[str, pathlib.Path]): A dictionary mapping download URLs to local file paths.
+    """
     with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(_download_files, list(meta_data.items()))
 
 
 def _download_files(data: typing.Tuple[str, pathlib.Path]):
+    """
+    Helper function to download a single file.
+
+    Args:
+        data (typing.Tuple[str, pathlib.Path]): A tuple containing the download URL and the local file path.
+    """
     url, file_path = data
 
     print(f"Downloading data from {url=} and saving to {file_path=}")
@@ -65,6 +93,12 @@ def _download_files(data: typing.Tuple[str, pathlib.Path]):
 
 
 def unarchive_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
+    """
+    Unarchive downloaded files using multiprocessing.
+
+    Args:
+        meta_data (typing.Dict[str, pathlib.Path]): A dictionary mapping download URLs to local file paths.
+    """
     with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(
             _unarchive_files,
@@ -73,6 +107,12 @@ def unarchive_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
 
 
 def _unarchive_files(archive_file_path: pathlib.Path):
+    """
+    Helper function to unarchive a single file.
+
+    Args:
+        archive_file_path (pathlib.Path): The path to the archive file to be unarchived.
+    """
     unarchive_file_path = archive_file_path.with_suffix("")
 
     print(
