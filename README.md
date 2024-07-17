@@ -36,3 +36,7 @@ pip install --upgrade pip
 ```shell
 pip install --requirement requirements.txt
 ```
+
+## TODO
+
+- Implement archive cleanup after download
