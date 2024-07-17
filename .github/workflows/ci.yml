@@ -1,0 +1,49 @@
+name: "MR Pipeline"
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: "Lint"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: sh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install --requirement requirements.txt
+      - name: Use Ruff
+        uses: chartboost/ruff-action@v1
+        with:
+          src: .
+  format:
+    name: "Format"
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+    defaults:
+      run:
+        shell: sh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install --requirement requirements.txt
+      - name: Use Ruff
+        uses: chartboost/ruff-action@v1
+        with:
+          src: .
+          args: "format --check"
