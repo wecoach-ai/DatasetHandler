@@ -26,21 +26,25 @@ def extract_multiprocess(
     file_lists: typing.List[pathlib.Path], scope: str, frame_cutoff: int
 ):
     with concurrent.futures.ProcessPoolExecutor() as executor:
+        args_count = len(file_lists)
+
         match scope:
             case "all":
-                extract_fn = _extract_all_images
-                args = [file_lists]
+                executor.map(_extract_all_images, file_lists)
             case "selected":
-                extract_fn = _extract_selected_images
-                args = [file_lists, [frame_cutoff for _ in range(len(file_lists))]]
-            case "smooth":
-                extract_fn = _extract_smooth_images
-                args = [
+                executor.map(
+                    _extract_selected_images,
                     file_lists,
-                    [(frame_cutoff - 1) // 2 for _ in range(len(file_lists))],
-                ]
-
-        executor.map(extract_fn, *args)
+                    [frame_cutoff for _ in range(args_count)],
+                    ["selected" for _ in range(args_count)],
+                )
+            case "smooth":
+                executor.map(
+                    _extract_smooth_images,
+                    file_lists,
+                    [(frame_cutoff - 1) // 2 for _ in range(args_count)],
+                    ["smooth" for _ in range(args_count)],
+                )
 
 
 def _extract_all_images(video_file_path: pathlib.Path):
@@ -62,7 +66,9 @@ def _extract_all_images(video_file_path: pathlib.Path):
     capture.release()
 
 
-def _extract_selected_images(video_file_path: pathlib.Path, frame_cutoff: int):
+def _extract_selected_images(
+    video_file_path: pathlib.Path, frame_cutoff: int, strategy: str
+):
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
@@ -72,8 +78,8 @@ def _extract_selected_images(video_file_path: pathlib.Path, frame_cutoff: int):
         / video_file_path.with_suffix("").name
         / "events_markup.json"
     )
-    selected_indices = _get_frame_indices_selected(
-        events_annotations_file, frame_cutoff
+    selected_indices = _get_frame_indices(
+        events_annotations_file, frame_cutoff, strategy
     )
 
     capture = cv2.VideoCapture(str(video_file_path))
@@ -92,7 +98,9 @@ def _extract_selected_images(video_file_path: pathlib.Path, frame_cutoff: int):
     capture.release()
 
 
-def _extract_smooth_images(video_file_path: pathlib.Path, frame_cutoff: int):
+def _extract_smooth_images(
+    video_file_path: pathlib.Path, frame_cutoff: int, strategy: str
+):
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
@@ -102,7 +110,9 @@ def _extract_smooth_images(video_file_path: pathlib.Path, frame_cutoff: int):
         / video_file_path.with_suffix("").name
         / "events_markup.json"
     )
-    selected_indices = _get_frame_indices_smooth(events_annotations_file, frame_cutoff)
+    selected_indices = _get_frame_indices(
+        events_annotations_file, frame_cutoff, strategy
+    )
 
     capture = cv2.VideoCapture(str(video_file_path))
 
@@ -120,8 +130,8 @@ def _extract_smooth_images(video_file_path: pathlib.Path, frame_cutoff: int):
     capture.release()
 
 
-def _get_frame_indices_selected(
-    file_path: pathlib.Path, num_frames: int
+def _get_frame_indices(
+    file_path: pathlib.Path, num_frames: int, strategy: str
 ) -> typing.Set[int]:
     result = set()
 
@@ -130,23 +140,11 @@ def _get_frame_indices_selected(
 
     for frame_string in sorted(events.keys()):
         frame = int(frame_string)
-        for index in range(frame - num_frames, frame + num_frames + 1):
-            result.add(index)
 
-    return result
-
-
-def _get_frame_indices_smooth(
-    file_path: pathlib.Path, num_frames: int
-) -> typing.Set[int]:
-    result = set()
-
-    with open(file_path, "r") as fp:
-        events = json.load(fp)
-
-    for frame_string in sorted(events.keys()):
-        frame = int(frame_string)
-        multiplier = 1 if events[frame_string] == "empty_event" else 2
+        if strategy == "selected":
+            multiplier = 1
+        if strategy == "smooth":
+            multiplier = 1 if events[frame_string] == "empty_event" else 2
 
         for index in range(
             frame - num_frames * multiplier, frame + num_frames * multiplier + 1
