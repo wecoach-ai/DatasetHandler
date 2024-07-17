@@ -73,6 +73,8 @@ def _extract_selected_images(video_file_path: pathlib.Path):
         if not flag:
             break
         counter += 1
+        if counter not in selected_indices:
+            continue
         image_path = image_directory / f"img_{counter:06d}.jpg"
         cv2.imwrite(image_path, frame)
 
