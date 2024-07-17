@@ -27,7 +27,9 @@ def extract_multiprocess(file_lists: typing.List[pathlib.Path]):
 
 
 def _extract_images(video_file_path: pathlib.Path):
-    image_directory = video_file_path.parent.parent / "images"
+    image_directory = (
+        video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
+    )
 
     capture = cv2.VideoCapture(str(video_file_path))
 
