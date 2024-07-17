@@ -40,11 +40,12 @@ pip install --requirement requirements.txt
 ### Scripts
 
 You can use the following script to run the cli in background
+
 ```shell
 nohup bash bin/background.sh >> /data/logs/dataset_handler.log &
 ```
+
 ## TODO
 
 - [documentation] Update `README.md` with required documentation.
-- [refactor] Refactor `_extract_selected_images` and `_extract_smooth_images` to a single function
 - [feature] Implement archive cleanup after download.
