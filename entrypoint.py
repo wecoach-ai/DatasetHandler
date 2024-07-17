@@ -33,9 +33,15 @@ def download(download_url, path):
     default="all",
     help="Select the type of image extraction (default=all)",
 )
-def extract(path, scope):
+@click.option(
+    "--frame-cutoff",
+    type=int,
+    default=9,
+    help="Cutoff frames for selected/smooth type (default=9)",
+)
+def extract(path, scope, frame_cutoff):
     meta_data = generate_extract_meta_data(path)
-    extract_multiprocess(meta_data, scope)
+    extract_multiprocess(meta_data, scope, frame_cutoff)
 
 
 if __name__ == "__main__":
