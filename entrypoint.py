@@ -21,7 +21,7 @@ def download(download_url, path):
     setup_dataset_directory(path)
     meta_data = generate_download_meta_data(path, download_url)
 
-    # download_multiprocess(meta_data)
+    download_multiprocess(meta_data)
     unarchive_multiprocess(meta_data)
 
 
