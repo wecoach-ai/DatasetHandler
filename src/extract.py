@@ -26,27 +26,31 @@ def extract_multiprocess(
     file_lists: typing.List[pathlib.Path], scope: str, frame_cutoff: int
 ):
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        match scope:
-            case "all":
-                extract_fn = _extract_all_images
-                args = [file_lists]
-            case "selected":
-                extract_fn = _extract_selected_images
-                args = [file_lists, [frame_cutoff for _ in range(len(file_lists))]]
-            case "smooth":
-                extract_fn = _extract_smooth_images
-                args = [
-                    file_lists,
-                    [(frame_cutoff - 1) // 2 for _ in range(len(file_lists))],
-                ]
+        args_count = len(file_lists)
 
-        executor.map(extract_fn, *args)
+        executor.map(
+            _extract_images,
+            file_lists,
+            [frame_cutoff for _ in range(args_count)],
+            [scope for _ in range(args_count)],
+        )
 
 
-def _extract_all_images(video_file_path: pathlib.Path):
+def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: str):
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
+    selected_indices = set()
+    if strategy != "all":
+        events_annotations_file = (
+            video_file_path.parent.parent
+            / "annotations"
+            / video_file_path.with_suffix("").name
+            / "events_markup.json"
+        )
+        selected_indices = _get_frame_indices(
+            events_annotations_file, frame_cutoff, strategy
+        )
 
     capture = cv2.VideoCapture(str(video_file_path))
 
@@ -55,73 +59,19 @@ def _extract_all_images(video_file_path: pathlib.Path):
         flag, frame = capture.read()
         if not flag:
             break
+
         counter += 1
-        image_path = image_directory / f"img_{counter:06d}.jpg"
-        cv2.imwrite(image_path, frame)
-
-    capture.release()
-
-
-def _extract_selected_images(video_file_path: pathlib.Path, frame_cutoff: int):
-    image_directory = (
-        video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
-    )
-    events_annotations_file = (
-        video_file_path.parent.parent
-        / "annotations"
-        / video_file_path.with_suffix("").name
-        / "events_markup.json"
-    )
-    selected_indices = _get_frame_indices_selected(
-        events_annotations_file, frame_cutoff
-    )
-
-    capture = cv2.VideoCapture(str(video_file_path))
-
-    counter = -1
-    while True:
-        flag, frame = capture.read()
-        if not flag:
-            break
-        counter += 1
-        if counter not in selected_indices:
+        if strategy != "all" and counter not in selected_indices:
             continue
+
         image_path = image_directory / f"img_{counter:06d}.jpg"
         cv2.imwrite(image_path, frame)
 
     capture.release()
 
 
-def _extract_smooth_images(video_file_path: pathlib.Path, frame_cutoff: int):
-    image_directory = (
-        video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
-    )
-    events_annotations_file = (
-        video_file_path.parent.parent
-        / "annotations"
-        / video_file_path.with_suffix("").name
-        / "events_markup.json"
-    )
-    selected_indices = _get_frame_indices_smooth(events_annotations_file, frame_cutoff)
-
-    capture = cv2.VideoCapture(str(video_file_path))
-
-    counter = -1
-    while True:
-        flag, frame = capture.read()
-        if not flag:
-            break
-        counter += 1
-        if counter not in selected_indices:
-            continue
-        image_path = image_directory / f"img_{counter:06d}.jpg"
-        cv2.imwrite(image_path, frame)
-
-    capture.release()
-
-
-def _get_frame_indices_selected(
-    file_path: pathlib.Path, num_frames: int
+def _get_frame_indices(
+    file_path: pathlib.Path, num_frames: int, strategy: str
 ) -> typing.Set[int]:
     result = set()
 
@@ -130,23 +80,12 @@ def _get_frame_indices_selected(
 
     for frame_string in sorted(events.keys()):
         frame = int(frame_string)
-        for index in range(frame - num_frames, frame + num_frames + 1):
-            result.add(index)
 
-    return result
+        if strategy == "selected":
+            multiplier = 1
 
-
-def _get_frame_indices_smooth(
-    file_path: pathlib.Path, num_frames: int
-) -> typing.Set[int]:
-    result = set()
-
-    with open(file_path, "r") as fp:
-        events = json.load(fp)
-
-    for frame_string in sorted(events.keys()):
-        frame = int(frame_string)
-        multiplier = 1 if events[frame_string] == "empty_event" else 2
+        if strategy == "smooth":
+            multiplier = 1 if events[frame_string] == "empty_event" else 2
 
         for index in range(
             frame - num_frames * multiplier, frame + num_frames * multiplier + 1
