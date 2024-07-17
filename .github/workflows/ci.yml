@@ -2,6 +2,9 @@ name: "MR Pipeline"
 
 on:
   pull_request:
+    paths:
+      - "**/*.py"
+      - "requirements.txt"
 
 jobs:
   lint:
