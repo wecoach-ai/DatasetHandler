@@ -87,7 +87,6 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
     capture.release()
 
 
-
 def _get_frame_indices(
     file_path: pathlib.Path, num_frames: int, strategy: str
 ) -> typing.Set[int]:
