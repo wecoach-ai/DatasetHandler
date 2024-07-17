@@ -37,10 +37,15 @@ pip install --upgrade pip
 pip install --requirement requirements.txt
 ```
 
+### Scripts
+
+You can use the following script to run the cli in background
+
+```shell
+nohup bash bin/background.sh >> /data/logs/dataset_handler.log &
+```
+
 ## TODO
 
-- [documentation] Implement docstrings for each function.
 - [documentation] Update `README.md` with required documentation.
-- [refactor] Refactor `_get_frame_indices_selected` and `_get_frame_indices_smooth` to a single function
-- [refactor] Refactor `_extract_selected_images` and `_extract_smooth_images` to a single function
 - [feature] Implement archive cleanup after download.
