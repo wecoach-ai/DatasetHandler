@@ -28,7 +28,7 @@ def extract_multiprocess(file_lists: typing.List[pathlib.Path], scope: str):
             case "all":
                 extract_fn = _extract_all_images
             case "selected":
-                extract_fn = None
+                extract_fn = _extract_selected_images
             case "smooth":
                 extract_fn = None
 
@@ -62,6 +62,7 @@ def _extract_selected_images(video_file_path: pathlib.Path):
         video_file_path.parent.parent
         / "annotations"
         / video_file_path.with_suffix("").name
+        / "events_markup.json"
     )
     selected_indices = _get_frame_indices(events_annotations_file)
 
