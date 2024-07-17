@@ -21,12 +21,20 @@ def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
     return result
 
 
-def extract_multiprocess(file_lists: typing.List[pathlib.Path]):
+def extract_multiprocess(file_lists: typing.List[pathlib.Path], scope: str):
+    match scope:
+        case "all":
+            extract_fn = _extract_all_images
+        case "selected":
+            extract_fn = None
+        case "smooth":
+            extract_fn = None
+
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(_extract_images, file_lists)
+        executor.map(extract_fn, file_lists)
 
 
-def _extract_images(video_file_path: pathlib.Path):
+def _extract_all_images(video_file_path: pathlib.Path):
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )

@@ -21,15 +21,21 @@ def download(download_url, path):
     setup_dataset_directory(path)
     meta_data = generate_download_meta_data(path, download_url)
 
-    download_multiprocess(meta_data)
+    # download_multiprocess(meta_data)
     unarchive_multiprocess(meta_data)
 
 
 @cli.command()
 @click.argument("path", required=True)
-def extract(path):
+@click.option(
+    "--scope",
+    type=click.Choice(["all", "selected", "smooth"], case_sensitive=False),
+    default="all",
+    help="Select the type of image extraction (default=all)",
+)
+def extract(path, scope):
     meta_data = generate_extract_meta_data(path)
-    extract_multiprocess(meta_data)
+    extract_multiprocess(meta_data, scope)
 
 
 if __name__ == "__main__":
