@@ -54,7 +54,7 @@ def _extract_all_images(video_file_path: pathlib.Path):
     capture.release()
 
 
-def _extract_selected_images(video_file_path: pathlib.Path):
+def _extract_selected_images(video_file_path: pathlib.Path, frame_cutoff: int):
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
@@ -64,7 +64,7 @@ def _extract_selected_images(video_file_path: pathlib.Path):
         / video_file_path.with_suffix("").name
         / "events_markup.json"
     )
-    selected_indices = _get_frame_indices(events_annotations_file)
+    selected_indices = _get_frame_indices(events_annotations_file, frame_cutoff)
 
     capture = cv2.VideoCapture(str(video_file_path))
 
@@ -82,7 +82,7 @@ def _extract_selected_images(video_file_path: pathlib.Path):
     capture.release()
 
 
-def _get_frame_indices(file_path: pathlib.Path) -> typing.Set[int]:
+def _get_frame_indices(file_path: pathlib.Path, num_frames: int) -> typing.Set[int]:
     result = set()
 
     with open(file_path, "r") as fp:
@@ -90,7 +90,7 @@ def _get_frame_indices(file_path: pathlib.Path) -> typing.Set[int]:
 
     for frame_string in sorted(events.keys()):
         frame = int(frame_string)
-        for index in range(frame - 9, frame + 9 + 1):
+        for index in range(frame - num_frames, frame + num_frames + 1):
             result.add(index)
 
     return result
