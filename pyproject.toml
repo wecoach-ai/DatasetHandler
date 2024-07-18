@@ -56,4 +56,4 @@ pretty = true
 color_output = true
 error_summary = true
 
-# html_report = "./reports/mypy/"
+html_report = "./reports/mypy/"
