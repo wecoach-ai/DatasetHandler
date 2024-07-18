@@ -56,8 +56,6 @@ pip install --upgrade pip
 ```shell
 pip install --requirement requirements.txt
 ```
-
 ## TODO
 
-- [feature] Implement archive cleanup after download.
 - [documentation] Add badges to `README.md`.

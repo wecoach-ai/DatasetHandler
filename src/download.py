@@ -119,3 +119,16 @@ def _unarchive_files(archive_file_path: pathlib.Path):
         f"Unarchiving data from {archive_file_path=} and saving to {unarchive_file_path=}"
     )
     shutil.unpack_archive(archive_file_path, unarchive_file_path)
+
+
+def clean_archive(file_list: typing.List[pathlib.Path]):
+    """
+    The function is used to clean up all the archived data.
+    Saving memory resources, by deleting ".zip" files.
+
+    Args:
+        file_list: A list of local file paths, used to access ".zip" files.
+    """
+    for file_path in file_list:
+        if str(file_path).endswith(".zip"):
+            file_path.unlink()

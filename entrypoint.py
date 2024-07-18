@@ -1,6 +1,7 @@
 import click
 
 from src.download import (
+    clean_archive,
     download_multiprocess,
     generate_download_meta_data,
     setup_dataset_directory,
@@ -18,19 +19,27 @@ def cli():
 @cli.command()
 @click.argument("download_url", required=True)
 @click.argument("path", required=True)
-def download(download_url: str, path: str):
+@click.option("--cleanup/--no-cleanup", default=False)
+def download(download_url: str, path: str, cleanup: bool):
     """
     Download and unarchive dataset files.
 
     Args:
+
         download_url: The base URL for downloading dataset files.
+
         path: The local directory path to save the downloaded dataset files.
+
+        cleanup: A flag to provide optionality for cleaning up of archived dataset.
     """
     setup_dataset_directory(path)
     meta_data = generate_download_meta_data(path, download_url)
 
     download_multiprocess(meta_data)
     unarchive_multiprocess(meta_data)
+
+    if cleanup:
+        clean_archive(list(meta_data.values()))
 
 
 @cli.command()
