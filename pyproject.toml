@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "datasethandler"
+version = "0.1.0"
+description = "Utility package for managing dataset"
+authors = ["onlinejudge95 <onlinejudge95@gmail.com>", "Shreshtth <shreshtthpersonal@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+click = "^8.1.7"
+httpx = "^0.27.0"
+opencv-python-headless = "^4.10.0.84"
+
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.2"
+mypy = "^1.10.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
