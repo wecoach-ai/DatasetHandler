@@ -50,12 +50,7 @@ def download(download_url: str, path: str, cleanup: bool):
     default="all",
     help="Select the type of image extraction (default=all)",
 )
-@click.option(
-    "--frame-cutoff",
-    type=int,
-    default=9,
-    help="Cutoff frames for selected/smooth type (default=9)",
-)
+@click.option("--frame-cutoff", type=int, default=9, help="Cutoff frames for selected/smooth type (default=9)")
 def extract(path: str, scope: str, frame_cutoff: int):
     """
     Extract images from video files based on the specified scope and frame cutoff.

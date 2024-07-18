@@ -55,8 +55,8 @@ poetry install --with dev
 - Before you commit and push your changes please run the following
 
 ```shell
-poetry run ruff check --respect-gitignore .
-poetry run ruff format --respect-gitignore .
+poetry run ruff check
+poetry run ruff format
 poetry run mypy .
 
 ```

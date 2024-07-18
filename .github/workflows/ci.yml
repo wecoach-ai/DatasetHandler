@@ -28,9 +28,9 @@ jobs:
       - name: Install dependencies
         run: poetry install --with dev
       - name: Run ruff linter
-        run: poetry run ruff check .
+        run: poetry run ruff check
       - name: Run ruff formatter
-        run: poetry run ruff format --check .
+        run: poetry run ruff format --check
   type:
     name: "Type-Check"
     runs-on: ubuntu-latest

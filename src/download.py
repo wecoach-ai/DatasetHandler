@@ -40,27 +40,17 @@ def generate_download_meta_data(path: str, url: str) -> typing.Dict[str, pathlib
         A dictionary mapping download URLs to local file paths.
     """
     training_annotations = {
-        f"{url}/game_{i}.zip": pathlib.Path(path)
-        / "train"
-        / "annotations"
-        / f"game_{i}.zip"
-        for i in range(1, 6)
+        f"{url}/game_{i}.zip": pathlib.Path(path) / "train" / "annotations" / f"game_{i}.zip" for i in range(1, 6)
     }
     training_videos = {
-        f"{url}/game_{i}.mp4": pathlib.Path(path) / "train" / "videos" / f"game_{i}.mp4"
-        for i in range(1, 6)
+        f"{url}/game_{i}.mp4": pathlib.Path(path) / "train" / "videos" / f"game_{i}.mp4" for i in range(1, 6)
     }
 
     testing_annotations = {
-        f"{url}/test_{i}.zip": pathlib.Path(path)
-        / "test"
-        / "annotations"
-        / f"test_{i}.zip"
-        for i in range(1, 8)
+        f"{url}/test_{i}.zip": pathlib.Path(path) / "test" / "annotations" / f"test_{i}.zip" for i in range(1, 8)
     }
     testing_videos = {
-        f"{url}/test_{i}.mp4": pathlib.Path(path) / "test" / "videos" / f"test_{i}.mp4"
-        for i in range(1, 8)
+        f"{url}/test_{i}.mp4": pathlib.Path(path) / "test" / "videos" / f"test_{i}.mp4" for i in range(1, 8)
     }
 
     return training_annotations | testing_annotations | training_videos | testing_videos
@@ -100,10 +90,7 @@ def unarchive_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
         meta_data: A dictionary mapping download URLs to local file paths.
     """
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(
-            _unarchive_files,
-            [item for item in list(meta_data.values()) if str(item).endswith(".zip")],
-        )
+        executor.map(_unarchive_files, [item for item in list(meta_data.values()) if str(item).endswith(".zip")])
 
 
 def _unarchive_files(archive_file_path: pathlib.Path):
@@ -115,9 +102,7 @@ def _unarchive_files(archive_file_path: pathlib.Path):
     """
     unarchive_file_path = archive_file_path.with_suffix("")
 
-    print(
-        f"Unarchiving data from {archive_file_path=} and saving to {unarchive_file_path=}"
-    )
+    print(f"Unarchiving data from {archive_file_path=} and saving to {unarchive_file_path=}")
     shutil.unpack_archive(archive_file_path, unarchive_file_path)
 
 

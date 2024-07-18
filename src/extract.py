@@ -31,9 +31,7 @@ def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
     return result
 
 
-def extract_multiprocess(
-    file_lists: typing.List[pathlib.Path], scope: str, frame_cutoff: int
-):
+def extract_multiprocess(file_lists: typing.List[pathlib.Path], scope: str, frame_cutoff: int):
     """
     Extract images from video files using multiprocessing.
 
@@ -46,10 +44,7 @@ def extract_multiprocess(
         args_count = len(file_lists)
 
         executor.map(
-            _extract_images,
-            file_lists,
-            [frame_cutoff for _ in range(args_count)],
-            [scope for _ in range(args_count)],
+            _extract_images, file_lists, [frame_cutoff for _ in range(args_count)], [scope for _ in range(args_count)]
         )
 
 
@@ -68,20 +63,13 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
                     "selected" extracts frames around annotated events.
                     "smooth" extracts frames around annotated events with smooth labelling.
     """
-    image_directory = (
-        video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
-    )
+    image_directory = video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     selected_indices = set()
     if strategy != "all":
         events_annotations_file = (
-            video_file_path.parent.parent
-            / "annotations"
-            / video_file_path.with_suffix("").name
-            / "events_markup.json"
+            video_file_path.parent.parent / "annotations" / video_file_path.with_suffix("").name / "events_markup.json"
         )
-        selected_indices = _get_frame_indices(
-            events_annotations_file, frame_cutoff, strategy
-        )
+        selected_indices = _get_frame_indices(events_annotations_file, frame_cutoff, strategy)
 
     capture = cv2.VideoCapture(str(video_file_path))
 
@@ -101,9 +89,7 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
     capture.release()
 
 
-def _get_frame_indices(
-    file_path: pathlib.Path, num_frames: int, strategy: str
-) -> typing.Set[int]:
+def _get_frame_indices(file_path: pathlib.Path, num_frames: int, strategy: str) -> typing.Set[int]:
     """
     This function reads the event annotations from a JSON file and generates a set of frame indices to extract.
     For each event at frame `f`, the function will include frames from `f-num_frames*multiplier` to
@@ -133,9 +119,7 @@ def _get_frame_indices(
         if strategy == "smooth":
             multiplier = 1 if events[frame_string] == "empty_event" else 2
 
-        for index in range(
-            frame - num_frames * multiplier, frame + num_frames * multiplier + 1
-        ):
+        for index in range(frame - num_frames * multiplier, frame + num_frames * multiplier + 1):
             result.add(index)
 
     return result

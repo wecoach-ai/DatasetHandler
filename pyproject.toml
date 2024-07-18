@@ -23,3 +23,16 @@ mypy = "^1.10.1"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+include = ["*.py"]
+line-length = 120
+output-format = "grouped"
+respect-gitignore = true
+src = ["src"]
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "native"
+quote-style = "double"
+skip-magic-trailing-comma = true
