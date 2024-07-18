@@ -6,7 +6,7 @@ DatasetHandler is a generic helper package for downloading datasets and performi
 This CLI program provides two main commands: `download` and `extract`, enabling easy management of datasets.
 
 ```shell
-$ python entrypoint.py
+$ poetry run python entrypoint.py
 Usage: entrypoint.py [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -40,32 +40,24 @@ nohup bash bin/background.sh >> /data/logs/dataset_handler.log &
 
 ## Contributing
 
-- Before running this CLI make sure you have an appropriate version of python interpreter installed.
+- We use poetry for managing dependencies, please make sure you have poetry installed.
 
 ```shell
-python -V
+poetry version
 ```
 
-- Create a virtual env
+- Install the dependencies using `poetry`
 
 ```shell
-python -m venv env
-source env/bin/activate
-pip install --upgrade pip
-```
-
-- Install the dependencies from `requirements.txt`
-
-```shell
-pip install --requirement requirements.txt
+poetry install --with dev
 ```
 
 - Before you commit and push your changes please run the following
 
 ```shell
-ruff check --respect-gitignore .
-ruff format --respect-gitignore .
-mypy .
+poetry run ruff check --respect-gitignore .
+poetry run ruff format --respect-gitignore .
+poetry run mypy .
 
 ```
 
@@ -74,6 +66,5 @@ mypy .
 - [documentation] Add badges to `README.md`.
 - [refactor] Add error handling.
 - [refactor] Add logging.
-- [feature] Add `pyproject.toml` for configuring `ruff` & `mypy`.
 - [test] Add unit tests.
 - [feature] Publish as a PyPI package.
