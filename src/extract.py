@@ -4,9 +4,10 @@ import pathlib
 import typing
 
 import cv2
+import numpy as np
 
 
-def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
+def generate_extract_meta_data(path: str) -> list[pathlib.Path]:
     """
     Generate metadata for extracting images from video files.
 
@@ -16,11 +17,11 @@ def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
     Returns:
         A list of video file paths to extract images from.
     """
-    dataset_directory = pathlib.Path(path)
-    train_video_directory = dataset_directory / "train" / "videos"
-    test_video_directory = dataset_directory / "test" / "videos"
+    dataset_directory: pathlib.Path = pathlib.Path(path)
+    train_video_directory: pathlib.Path = dataset_directory / "train" / "videos"
+    test_video_directory: pathlib.Path = dataset_directory / "test" / "videos"
 
-    result = [video_file for video_file in train_video_directory.iterdir()] + [
+    result: list[pathlib.Path] = [video_file for video_file in train_video_directory.iterdir()] + [
         video_file for video_file in test_video_directory.iterdir()
     ]
 
@@ -31,9 +32,7 @@ def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
     return result
 
 
-def extract_multiprocess(
-    file_lists: typing.List[pathlib.Path], scope: str, frame_cutoff: int
-):
+def extract_multiprocess(file_lists: list[pathlib.Path], scope: str, frame_cutoff: int) -> None:
     """
     Extract images from video files using multiprocessing.
 
@@ -43,17 +42,14 @@ def extract_multiprocess(
         frame_cutoff: The cutoff frames for selected/smooth type extraction.
     """
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        args_count = len(file_lists)
+        args_count: int = len(file_lists)
 
         executor.map(
-            _extract_images,
-            file_lists,
-            [frame_cutoff for _ in range(args_count)],
-            [scope for _ in range(args_count)],
+            _extract_images, file_lists, [frame_cutoff for _ in range(args_count)], [scope for _ in range(args_count)]
         )
 
 
-def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: str):
+def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: str) -> None:
     """
     This function reads the event annotations from a JSON file if the strategy is not "all".
     It generates a set of frame indices (by calling _get_frame_indices() func) to extract based on the annotations
@@ -68,24 +64,19 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
                     "selected" extracts frames around annotated events.
                     "smooth" extracts frames around annotated events with smooth labelling.
     """
-    image_directory = (
-        video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
-    )
-    selected_indices = set()
+    image_directory: pathlib.Path = video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
+    selected_indices: set[int]
     if strategy != "all":
-        events_annotations_file = (
-            video_file_path.parent.parent
-            / "annotations"
-            / video_file_path.with_suffix("").name
-            / "events_markup.json"
+        events_annotations_file: pathlib.Path = (
+            video_file_path.parent.parent / "annotations" / video_file_path.with_suffix("").name / "events_markup.json"
         )
-        selected_indices = _get_frame_indices(
-            events_annotations_file, frame_cutoff, strategy
-        )
+        selected_indices = _get_frame_indices(events_annotations_file, frame_cutoff, strategy)
 
-    capture = cv2.VideoCapture(str(video_file_path))
+    capture: cv2.VideoCapture = cv2.VideoCapture(str(video_file_path))
 
-    counter = -1
+    counter: int = -1
+    flag: bool
+    frame: cv2.Mat | np.ndarray[typing.Any, np.dtype[np.integer[typing.Any] | np.floating[typing.Any]]]
     while True:
         flag, frame = capture.read()
         if not flag:
@@ -95,15 +86,13 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
         if strategy != "all" and counter not in selected_indices:
             continue
 
-        image_path = image_directory / f"img_{counter:06d}.jpg"
+        image_path: pathlib.Path = image_directory / f"img_{counter:06d}.jpg"
         cv2.imwrite(str(image_path), frame)
 
     capture.release()
 
 
-def _get_frame_indices(
-    file_path: pathlib.Path, num_frames: int, strategy: str
-) -> typing.Set[int]:
+def _get_frame_indices(file_path: pathlib.Path, num_frames: int, strategy: str) -> set[int]:
     """
     This function reads the event annotations from a JSON file and generates a set of frame indices to extract.
     For each event at frame `f`, the function will include frames from `f-num_frames*multiplier` to
@@ -119,7 +108,7 @@ def _get_frame_indices(
     Returns:
         A set of frame indices to extract, covering the range around each annotated event.
     """
-    result = set()
+    result: set[int] = set()
 
     with open(file_path, "r") as fp:
         events = json.load(fp)
@@ -133,9 +122,7 @@ def _get_frame_indices(
         if strategy == "smooth":
             multiplier = 1 if events[frame_string] == "empty_event" else 2
 
-        for index in range(
-            frame - num_frames * multiplier, frame + num_frames * multiplier + 1
-        ):
+        for index in range(frame - num_frames * multiplier, frame + num_frames * multiplier + 1):
             result.add(index)
 
     return result
