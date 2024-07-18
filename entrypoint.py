@@ -1,6 +1,7 @@
 import click
 
 from src.download import (
+    clean_archive,
     download_multiprocess,
     generate_download_meta_data,
     setup_dataset_directory,
@@ -38,7 +39,7 @@ def download(download_url: str, path: str, cleanup: bool):
     unarchive_multiprocess(meta_data)
 
     if cleanup:
-        click.echo("Cleanup is opted.")
+        clean_archive(list(meta_data.values()))
 
 
 @cli.command()
