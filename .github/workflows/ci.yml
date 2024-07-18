@@ -5,7 +5,8 @@ on:
     paths:
       - "**/*.py"
       - ".github/workflows/*.yml"
-      - "requirements.txt"
+      - "poetry.lock"
+      - "pyproject.toml"
 
 jobs:
   lint:
@@ -16,20 +17,22 @@ jobs:
         shell: sh
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
+      - name: Install poetry
+        run: pipx install poetry
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.1.1
         with:
           python-version: "3.12"
-          cache: "pip"
+          cache: "poetry"
       - name: Install dependencies
-        run: pip install --requirement requirements.txt
-      - name: Use Ruff
-        uses: chartboost/ruff-action@v1
-        with:
-          src: .
-  format:
-    name: "Format"
+        run: poetry install --with dev
+      - name: Run ruff linter
+        run: poetry run ruff check .
+      - name: Run ruff formatter
+        run: poetry run ruff format --check .
+  type:
+    name: "Type-Check"
     runs-on: ubuntu-latest
     needs:
       - lint
@@ -39,37 +42,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install poetry
+        run: pipx install poetry
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
+          cache: "poetry"
       - name: Install dependencies
-        run: pip install --requirement requirements.txt
-      - name: Use Ruff
-        uses: chartboost/ruff-action@v1
-        with:
-          src: .
-          args: "format --check"
-  type:
-    name: "Type-Check"
-    runs-on: ubuntu-latest
-    needs:
-      - format
-    defaults:
-      run:
-        shell: sh
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "pip"
-      - name: Install dependencies
-        run: pip install --requirement requirements.txt
-      - name: Install mypy
-        run: pip install mypy
+        run: poetry install --with dev
       - name: Run mypy
-        run: mypy .
+        run: poetry run mypy .
