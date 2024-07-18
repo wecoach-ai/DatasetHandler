@@ -14,7 +14,7 @@ def generate_extract_meta_data(path: str) -> typing.List[pathlib.Path]:
         path: The local directory path containing the dataset.
 
     Returns:
-        typing.List[pathlib.Path]: A list of video file paths to extract images from.
+        A list of video file paths to extract images from.
     """
     dataset_directory = pathlib.Path(path)
     train_video_directory = dataset_directory / "train" / "videos"
@@ -54,6 +54,20 @@ def extract_multiprocess(
 
 
 def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: str):
+    """
+    This function reads the event annotations from a JSON file if the strategy is not "all".
+    It generates a set of frame indices (by calling _get_frame_indices() func) to extract based on the annotations
+    and the specified strategy. The extracted frames are saved as images in the "images" directory.
+
+    Args:
+        video_file_path: The path to the video file.
+        frame_cutoff: The number of frames to include before and after each annotated event.
+                      This is required only if the strategy is "selected" or "smooth".
+        strategy:   The extraction strategy. Can be "all", "selected", or "smooth".
+                    "all" extracts all frames.
+                    "selected" extracts frames around annotated events.
+                    "smooth" extracts frames around annotated events with smooth labelling.
+    """
     image_directory = (
         video_file_path.parent.parent / "images" / video_file_path.with_suffix("").name
     )
@@ -90,6 +104,21 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
 def _get_frame_indices(
     file_path: pathlib.Path, num_frames: int, strategy: str
 ) -> typing.Set[int]:
+    """
+    This function reads the event annotations from a JSON file and generates a set of frame indices to extract.
+    For each event at frame `f`, the function will include frames from `f-num_frames*multiplier` to
+    `f+num_frames*multiplier`, where `multiplier` is determined based on the strategy and event type.
+
+    Args:
+        file_path: The path to the JSON file(events_markup) containing event annotations.
+        num_frames: The number of frames to include before and after each annotated event.
+        strategy: The extraction strategy. Can be "selected" or "smooth".
+                  "selected" includes frames directly around the annotated event.
+                  "smooth" applies a multiplier based on the event type.
+
+    Returns:
+        A set of frame indices to extract, covering the range around each annotated event.
+    """
     result = set()
 
     with open(file_path, "r") as fp:

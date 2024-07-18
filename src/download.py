@@ -37,7 +37,7 @@ def generate_download_meta_data(path: str, url: str) -> typing.Dict[str, pathlib
         url: The base URL for downloading dataset files.
 
     Returns:
-        typing.Dict[str, pathlib.Path]: A dictionary mapping download URLs to local file paths.
+        A dictionary mapping download URLs to local file paths.
     """
     training_annotations = {
         f"{url}/game_{i}.zip": pathlib.Path(path)
