@@ -88,8 +88,8 @@ def _download_files(data: typing.Tuple[str, pathlib.Path]):
 
     print(f"Downloading data from {url=} and saving to {file_path=}")
     with httpx.stream("GET", url) as response, open(file_path, "wb") as fp:
-        for data in response.iter_bytes():
-            fp.write(data)
+        for chunk in response.iter_bytes():
+            fp.write(chunk)
 
 
 def unarchive_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
