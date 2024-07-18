@@ -66,5 +66,4 @@ poetry run mypy
 - [documentation] Add badges to `README.md`.
 - [refactor] Add error handling.
 - [refactor] Add logging.
-- [test] Add unit tests.
 - [feature] Publish as a PyPI package.
