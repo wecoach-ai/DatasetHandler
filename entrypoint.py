@@ -13,7 +13,7 @@ from src.extract import extract_multiprocess, generate_extract_meta_data
 
 
 @click.group()
-def cli():
+def cli() -> None:
     """Command Line Interface for the data processing pipeline."""
     pass
 
@@ -22,7 +22,7 @@ def cli():
 @click.argument("download_url", required=True)
 @click.argument("path", required=True)
 @click.option("--cleanup/--no-cleanup", default=False)
-def download(download_url: str, path: str, cleanup: bool):
+def download(download_url: str, path: str, cleanup: bool) -> None:
     """
     Download and unarchive dataset files.
 
@@ -53,7 +53,7 @@ def download(download_url: str, path: str, cleanup: bool):
     help="Select the type of image extraction (default=all)",
 )
 @click.option("--frame-cutoff", type=int, default=9, help="Cutoff frames for selected/smooth type (default=9)")
-def extract(path: str, scope: str, frame_cutoff: int):
+def extract(path: str, scope: str, frame_cutoff: int) -> None:
     """
     Extract images from video files based on the specified scope and frame cutoff.
 

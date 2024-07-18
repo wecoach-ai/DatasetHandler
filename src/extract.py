@@ -32,7 +32,7 @@ def generate_extract_meta_data(path: str) -> list[pathlib.Path]:
     return result
 
 
-def extract_multiprocess(file_lists: list[pathlib.Path], scope: str, frame_cutoff: int):
+def extract_multiprocess(file_lists: list[pathlib.Path], scope: str, frame_cutoff: int) -> None:
     """
     Extract images from video files using multiprocessing.
 
@@ -49,7 +49,7 @@ def extract_multiprocess(file_lists: list[pathlib.Path], scope: str, frame_cutof
         )
 
 
-def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: str):
+def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: str) -> None:
     """
     This function reads the event annotations from a JSON file if the strategy is not "all".
     It generates a set of frame indices (by calling _get_frame_indices() func) to extract based on the annotations

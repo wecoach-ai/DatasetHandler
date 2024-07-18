@@ -5,7 +5,7 @@ import shutil
 import httpx
 
 
-def setup_dataset_directory(path: str):
+def setup_dataset_directory(path: str) -> None:
     """
     Set up the necessary directory structure for the dataset.
 
@@ -55,7 +55,7 @@ def generate_download_meta_data(path: str, url: str) -> dict[str, pathlib.Path]:
     return training_annotations | testing_annotations | training_videos | testing_videos
 
 
-def download_multiprocess(meta_data: dict[str, pathlib.Path]):
+def download_multiprocess(meta_data: dict[str, pathlib.Path]) -> None:
     """
     Download files using multiprocessing.
 
@@ -66,7 +66,7 @@ def download_multiprocess(meta_data: dict[str, pathlib.Path]):
         executor.map(_download_files, list(meta_data.items()))
 
 
-def _download_files(data: tuple[str, pathlib.Path]):
+def _download_files(data: tuple[str, pathlib.Path]) -> None:
     """
     Helper function to download a single file.
 
@@ -84,7 +84,7 @@ def _download_files(data: tuple[str, pathlib.Path]):
             fp.write(chunk)
 
 
-def unarchive_multiprocess(meta_data: dict[str, pathlib.Path]):
+def unarchive_multiprocess(meta_data: dict[str, pathlib.Path]) -> None:
     """
     Unarchive downloaded files using multiprocessing.
 
@@ -95,7 +95,7 @@ def unarchive_multiprocess(meta_data: dict[str, pathlib.Path]):
         executor.map(_unarchive_files, [item for item in list(meta_data.values()) if str(item).endswith(".zip")])
 
 
-def _unarchive_files(archive_file_path: pathlib.Path):
+def _unarchive_files(archive_file_path: pathlib.Path) -> None:
     """
     Helper function to unarchive a single file.
 
@@ -108,7 +108,7 @@ def _unarchive_files(archive_file_path: pathlib.Path):
     shutil.unpack_archive(archive_file_path, unarchive_file_path)
 
 
-def clean_archive(file_list: list[pathlib.Path]):
+def clean_archive(file_list: list[pathlib.Path]) -> None:
     """
     The function is used to clean up all the archived data.
     Saving memory resources, by deleting ".zip" files.
