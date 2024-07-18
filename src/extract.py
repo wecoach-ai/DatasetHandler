@@ -96,7 +96,7 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
             continue
 
         image_path = image_directory / f"img_{counter:06d}.jpg"
-        cv2.imwrite(image_path, frame)
+        cv2.imwrite(str(image_path), frame)
 
     capture.release()
 
