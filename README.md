@@ -56,3 +56,6 @@ pip install --upgrade pip
 ```shell
 pip install --requirement requirements.txt
 ```
+## TODO
+
+- [documentation] Add badges to `README.md`.
