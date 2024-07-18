@@ -1,7 +1,6 @@
 import concurrent.futures
 import pathlib
 import shutil
-import typing
 
 import httpx
 
@@ -13,7 +12,7 @@ def setup_dataset_directory(path: str):
     Args:
         path: The local directory path for the dataset.
     """
-    directory = pathlib.Path(path)
+    directory: pathlib.Path = pathlib.Path(path)
     if not directory.exists():
         directory.mkdir(parents=True)
     dataset_directories = [
@@ -28,7 +27,7 @@ def setup_dataset_directory(path: str):
         item.mkdir(parents=True, exist_ok=True)
 
 
-def generate_download_meta_data(path: str, url: str) -> typing.Dict[str, pathlib.Path]:
+def generate_download_meta_data(path: str, url: str) -> dict[str, pathlib.Path]:
     """
     Generate metadata for downloading dataset files.
 
@@ -39,24 +38,24 @@ def generate_download_meta_data(path: str, url: str) -> typing.Dict[str, pathlib
     Returns:
         A dictionary mapping download URLs to local file paths.
     """
-    training_annotations = {
+    training_annotations: dict[str, pathlib.Path] = {
         f"{url}/game_{i}.zip": pathlib.Path(path) / "train" / "annotations" / f"game_{i}.zip" for i in range(1, 6)
     }
-    training_videos = {
+    training_videos: dict[str, pathlib.Path] = {
         f"{url}/game_{i}.mp4": pathlib.Path(path) / "train" / "videos" / f"game_{i}.mp4" for i in range(1, 6)
     }
 
-    testing_annotations = {
+    testing_annotations: dict[str, pathlib.Path] = {
         f"{url}/test_{i}.zip": pathlib.Path(path) / "test" / "annotations" / f"test_{i}.zip" for i in range(1, 8)
     }
-    testing_videos = {
+    testing_videos: dict[str, pathlib.Path] = {
         f"{url}/test_{i}.mp4": pathlib.Path(path) / "test" / "videos" / f"test_{i}.mp4" for i in range(1, 8)
     }
 
     return training_annotations | testing_annotations | training_videos | testing_videos
 
 
-def download_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
+def download_multiprocess(meta_data: dict[str, pathlib.Path]):
     """
     Download files using multiprocessing.
 
@@ -67,13 +66,16 @@ def download_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
         executor.map(_download_files, list(meta_data.items()))
 
 
-def _download_files(data: typing.Tuple[str, pathlib.Path]):
+def _download_files(data: tuple[str, pathlib.Path]):
     """
     Helper function to download a single file.
 
     Args:
         data: A tuple containing the download URL and the local file path.
     """
+    url: str
+    file_path: pathlib.Path
+
     url, file_path = data
 
     print(f"Downloading data from {url=} and saving to {file_path=}")
@@ -82,7 +84,7 @@ def _download_files(data: typing.Tuple[str, pathlib.Path]):
             fp.write(chunk)
 
 
-def unarchive_multiprocess(meta_data: typing.Dict[str, pathlib.Path]):
+def unarchive_multiprocess(meta_data: dict[str, pathlib.Path]):
     """
     Unarchive downloaded files using multiprocessing.
 
@@ -100,13 +102,13 @@ def _unarchive_files(archive_file_path: pathlib.Path):
     Args:
         archive_file_path: The path to the archive file to be unarchived.
     """
-    unarchive_file_path = archive_file_path.with_suffix("")
+    unarchive_file_path: pathlib.Path = archive_file_path.with_suffix("")
 
     print(f"Unarchiving data from {archive_file_path=} and saving to {unarchive_file_path=}")
     shutil.unpack_archive(archive_file_path, unarchive_file_path)
 
 
-def clean_archive(file_list: typing.List[pathlib.Path]):
+def clean_archive(file_list: list[pathlib.Path]):
     """
     The function is used to clean up all the archived data.
     Saving memory resources, by deleting ".zip" files.
