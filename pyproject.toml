@@ -66,7 +66,7 @@ branch = true
 fail_under = 10
 
 [tool.pytest.ini_options]
-addopts = "--cov-config pyproject.toml --cov src --cov-report html:reports/pytest --cov-report term"
+addopts = "--cov-config pyproject.toml --cov src --cov-report html:reports/pytest --cov-report xml:reports/coverage.xml --cov-report term"
 console_output_style = "progress"
 required_plugins = "pytest-cov pytest-mock hypothesis"
 testpaths = ["tests"]
