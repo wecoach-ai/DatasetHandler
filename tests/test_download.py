@@ -11,7 +11,7 @@ def test_setup_dataset_directory_not_exists(path: str) -> None:
 
     assert not test_directory_path.exists()
 
-    download.setup_dataset_directory(str(test_directory_path))
+    download.setup_dataset_directory(path)
 
     assert test_directory_path.exists()
     assert (test_directory_path / "test").exists()
@@ -26,7 +26,7 @@ def test_setup_dataset_directory_exists(path: str) -> None:
 
     assert test_directory_path.exists()
 
-    download.setup_dataset_directory(str(test_directory_path))
+    download.setup_dataset_directory(path)
 
     assert test_directory_path.exists()
     assert (test_directory_path / "test").exists()
