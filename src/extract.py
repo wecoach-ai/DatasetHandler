@@ -108,13 +108,14 @@ def _get_frame_indices(file_path: pathlib.Path, num_frames: int, strategy: str) 
     Returns:
         A set of frame indices to extract, covering the range around each annotated event.
     """
+    multiplier: int
     result: set[int] = set()
 
     with open(file_path, "r") as fp:
-        events = json.load(fp)
+        events: dict[str, str] = json.load(fp)
 
     for frame_string in sorted(events.keys()):
-        frame = int(frame_string)
+        frame: int = int(frame_string)
 
         if strategy == "selected":
             multiplier = 1

@@ -58,7 +58,7 @@ poetry install --with dev
 poetry run ruff check
 poetry run ruff format
 poetry run mypy
-
+poetry run pytest
 ```
 
 ## TODO
@@ -66,5 +66,4 @@ poetry run mypy
 - [documentation] Add badges to `README.md`.
 - [refactor] Add error handling.
 - [refactor] Add logging.
-- [test] Add unit tests.
 - [feature] Publish as a PyPI package.
