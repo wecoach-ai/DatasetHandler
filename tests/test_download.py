@@ -3,15 +3,16 @@ import pathlib
 import pytest
 
 from src import download
+from tests import conftest
 
 
-@pytest.mark.parametrize("path", ["/tmp/test123/", "/tmp/test456/"])
-def test_setup_dataset_directory_not_exists(path: str) -> None:
-    test_directory_path: pathlib.Path = pathlib.Path(path)
+@pytest.mark.parametrize("path", conftest.DATASET_DIRECTORIES_NOT_EXISTS)
+def test_setup_dataset_directory_not_exists(tmp_path: pathlib.Path, path: str) -> None:
+    test_directory_path: pathlib.Path = tmp_path / path
 
     assert not test_directory_path.exists()
 
-    download.setup_dataset_directory(path)
+    download.setup_dataset_directory(str(test_directory_path))
 
     assert test_directory_path.exists()
     assert (test_directory_path / "test").exists()
@@ -20,13 +21,12 @@ def test_setup_dataset_directory_not_exists(path: str) -> None:
     assert (test_directory_path / "test" / "videos").exists()
 
 
-@pytest.mark.parametrize("path", ["/tmp"])
-def test_setup_dataset_directory_exists(path: str) -> None:
-    test_directory_path: pathlib.Path = pathlib.Path(path)
+def test_setup_dataset_directory_exists(tmp_path: pathlib.Path) -> None:
+    test_directory_path: pathlib.Path = tmp_path
 
     assert test_directory_path.exists()
 
-    download.setup_dataset_directory(path)
+    download.setup_dataset_directory(str(test_directory_path))
 
     assert test_directory_path.exists()
     assert (test_directory_path / "test").exists()
