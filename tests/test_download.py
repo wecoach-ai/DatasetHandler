@@ -36,13 +36,15 @@ def test_setup_dataset_directory_exists(tmp_path: pathlib.Path) -> None:
 
 
 def test_generate_download_meta_data(tmp_path: pathlib.Path) -> None:
-    response = download.generate_download_meta_data(str(tmp_path), "https://example.com")
+    download_url = "https://example.com"
+
+    response = download.generate_download_meta_data(str(tmp_path), download_url)
 
     assert type(response) is dict
-    assert "https://example.com/test_1.mp4" in set(response.keys())
-    assert "https://example.com/test_1.zip" in set(response.keys())
-    assert "https://example.com/game_1.mp4" in set(response.keys())
-    assert "https://example.com/game_1.zip" in set(response.keys())
+    assert f"{download_url}/test_1.mp4" in set(response.keys())
+    assert f"{download_url}/test_1.zip" in set(response.keys())
+    assert f"{download_url}/game_1.mp4" in set(response.keys())
+    assert f"{download_url}/game_1.zip" in set(response.keys())
 
 
 def test__unarchive_files() -> None:
