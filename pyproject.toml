@@ -22,7 +22,6 @@ mypy = {extras = ["reports"], version = "^1.10.1"}
 pytest = "^8.2.2"
 pytest-cov = "^5.0.0"
 pytest-mock = "^3.14.0"
-hypothesis = "^6.108.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -68,5 +67,6 @@ fail_under = 10
 [tool.pytest.ini_options]
 addopts = "--cov-config pyproject.toml --cov src --cov-report html:reports/pytest --cov-report xml:reports/coverage.xml --cov-report term"
 console_output_style = "progress"
-required_plugins = "pytest-cov pytest-mock hypothesis"
+required_plugins = "pytest-cov pytest-mock"
+tmp_path_retention_policy = "none"
 testpaths = ["tests"]
