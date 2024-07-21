@@ -38,21 +38,18 @@ def generate_download_meta_data(path: str, url: str) -> dict[str, pathlib.Path]:
     Returns:
         A dictionary mapping download URLs to local file paths.
     """
-    training_annotations: dict[str, pathlib.Path] = {
-        f"{url}/game_{i}.zip": pathlib.Path(path) / "train" / "annotations" / f"game_{i}.zip" for i in range(1, 6)
-    }
-    training_videos: dict[str, pathlib.Path] = {
-        f"{url}/game_{i}.mp4": pathlib.Path(path) / "train" / "videos" / f"game_{i}.mp4" for i in range(1, 6)
-    }
+    testing_meta_data: dict[str, pathlib.Path] = dict()
+    training_meta_data: dict[str, pathlib.Path] = dict()
 
-    testing_annotations: dict[str, pathlib.Path] = {
-        f"{url}/test_{i}.zip": pathlib.Path(path) / "test" / "annotations" / f"test_{i}.zip" for i in range(1, 8)
-    }
-    testing_videos: dict[str, pathlib.Path] = {
-        f"{url}/test_{i}.mp4": pathlib.Path(path) / "test" / "videos" / f"test_{i}.mp4" for i in range(1, 8)
-    }
+    for i in range(1, 8):
+        testing_meta_data[f"{url}/test_{i}.zip"] = pathlib.Path(path) / "test" / "annotations" / f"test_{i}.zip"
+        testing_meta_data[f"{url}/test_{i}.mp4"] = pathlib.Path(path) / "test" / "videos" / f"test_{i}.mp4"
 
-    return training_annotations | testing_annotations | training_videos | testing_videos
+    for i in range(1, 6):
+        training_meta_data[f"{url}/game_{i}.zip"] = pathlib.Path(path) / "train" / "annotations" / f"game_{i}.zip"
+        training_meta_data[f"{url}/game_{i}.mp4"] = pathlib.Path(path) / "train" / "videos" / f"game_{i}.mp4"
+
+    return testing_meta_data | training_meta_data
 
 
 def download_multiprocess(meta_data: dict[str, pathlib.Path]) -> None:
