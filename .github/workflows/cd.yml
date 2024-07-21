@@ -14,8 +14,6 @@ jobs:
   tests:
     name: Unit-Tests ${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    needs:
-      - type
     defaults:
       run:
         shell: sh
