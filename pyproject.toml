@@ -62,7 +62,7 @@ html_report = "./reports/mypy/"
 branch = true
 
 [tool.coverage.report]
-fail_under = 10
+fail_under = 30
 
 [tool.pytest.ini_options]
 addopts = "--cov-config pyproject.toml --cov src --cov-report html:reports/pytest --cov-report xml:reports/coverage.xml --cov-report term"

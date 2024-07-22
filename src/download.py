@@ -38,21 +38,18 @@ def generate_download_meta_data(path: str, url: str) -> dict[str, pathlib.Path]:
     Returns:
         A dictionary mapping download URLs to local file paths.
     """
-    training_annotations: dict[str, pathlib.Path] = {
-        f"{url}/game_{i}.zip": pathlib.Path(path) / "train" / "annotations" / f"game_{i}.zip" for i in range(1, 6)
-    }
-    training_videos: dict[str, pathlib.Path] = {
-        f"{url}/game_{i}.mp4": pathlib.Path(path) / "train" / "videos" / f"game_{i}.mp4" for i in range(1, 6)
-    }
+    testing_meta_data: dict[str, pathlib.Path] = dict()
+    training_meta_data: dict[str, pathlib.Path] = dict()
 
-    testing_annotations: dict[str, pathlib.Path] = {
-        f"{url}/test_{i}.zip": pathlib.Path(path) / "test" / "annotations" / f"test_{i}.zip" for i in range(1, 8)
-    }
-    testing_videos: dict[str, pathlib.Path] = {
-        f"{url}/test_{i}.mp4": pathlib.Path(path) / "test" / "videos" / f"test_{i}.mp4" for i in range(1, 8)
-    }
+    for i in range(1, 8):
+        testing_meta_data[f"{url}/test_{i}.zip"] = pathlib.Path(path) / "test" / "annotations" / f"test_{i}.zip"
+        testing_meta_data[f"{url}/test_{i}.mp4"] = pathlib.Path(path) / "test" / "videos" / f"test_{i}.mp4"
 
-    return training_annotations | testing_annotations | training_videos | testing_videos
+    for i in range(1, 6):
+        training_meta_data[f"{url}/game_{i}.zip"] = pathlib.Path(path) / "train" / "annotations" / f"game_{i}.zip"
+        training_meta_data[f"{url}/game_{i}.mp4"] = pathlib.Path(path) / "train" / "videos" / f"game_{i}.mp4"
+
+    return testing_meta_data | training_meta_data
 
 
 def download_multiprocess(meta_data: dict[str, pathlib.Path]) -> None:
@@ -63,21 +60,17 @@ def download_multiprocess(meta_data: dict[str, pathlib.Path]) -> None:
         meta_data: A dictionary mapping download URLs to local file paths.
     """
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(_download_files, list(meta_data.items()))
+        executor.map(_download_files, list(meta_data.keys()), list(meta_data.values()))
 
 
-def _download_files(data: tuple[str, pathlib.Path]) -> None:
+def _download_files(url: str, file_path: pathlib.Path) -> None:
     """
     Helper function to download a single file.
 
     Args:
-        data: A tuple containing the download URL and the local file path.
+        url: Download url for the dataset
+        file_path: Local file path to download the data to.
     """
-    url: str
-    file_path: pathlib.Path
-
-    url, file_path = data
-
     print(f"Downloading data from {url=} and saving to {file_path=}")
     with httpx.stream("GET", url) as response, open(file_path, "wb") as fp:
         for chunk in response.iter_bytes():
