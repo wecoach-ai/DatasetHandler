@@ -73,9 +73,17 @@ def test__download_files(
         handler.write.assert_any_call(chunk)
 
 
-def test__unarchive_files() -> None:
-    assert True
+def test__unarchive_files(tmp_path: pathlib.Path, mock_shutil: unittest.mock.MagicMock) -> None:
+    archive_file_path: pathlib.Path = tmp_path / "file.zip"
+
+    download._unarchive_files(archive_file_path)
+
+    mock_shutil.assert_called_once_with(archive_file_path, archive_file_path.with_suffix(""))
 
 
-def test_clean_archive() -> None:
-    assert True
+def test_clean_archive(tmp_path: pathlib.Path, mock_unlink: unittest.mock.MagicMock) -> None:
+    dataset_file_list: list[pathlib.Path] = [tmp_path / "file.zip", tmp_path / "file.mp4"]
+
+    download.clean_archive(dataset_file_list)
+
+    mock_unlink.assert_called_once()
