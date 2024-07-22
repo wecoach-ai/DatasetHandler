@@ -60,21 +60,17 @@ def download_multiprocess(meta_data: dict[str, pathlib.Path]) -> None:
         meta_data: A dictionary mapping download URLs to local file paths.
     """
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(_download_files, list(meta_data.items()))
+        executor.map(_download_files, list(meta_data.keys()), list(meta_data.values()))
 
 
-def _download_files(data: tuple[str, pathlib.Path]) -> None:
+def _download_files(url: str, file_path: pathlib.Path) -> None:
     """
     Helper function to download a single file.
 
     Args:
-        data: A tuple containing the download URL and the local file path.
+        url: Download url for the dataset
+        file_path: Local file path to download the data to.
     """
-    url: str
-    file_path: pathlib.Path
-
-    url, file_path = data
-
     print(f"Downloading data from {url=} and saving to {file_path=}")
     with httpx.stream("GET", url) as response, open(file_path, "wb") as fp:
         for chunk in response.iter_bytes():

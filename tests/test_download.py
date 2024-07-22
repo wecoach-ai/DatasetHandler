@@ -1,6 +1,8 @@
 import pathlib
+import unittest
 
 import pytest
+import pytest_mock
 
 from src import download
 from tests import conftest
@@ -50,13 +52,28 @@ def test_generate_download_meta_data(tmp_path: pathlib.Path) -> None:
     assert tmp_path / "train" / "annotations" / "game_1.zip" in set(response.values())
 
 
-def test__download_files(tmp_path: pathlib.Path) -> None:
-    # download_file_path: pathlib.Path = tmp_path / "file.mp4"
-    # download_url: str = "https://example.com"
-    #
-    # download._download_files(download_file_path, download_url)
+def test__download_files(
+    tmp_path: pathlib.Path,
+    mocker: pytest_mock.MockerFixture,
+    mock_httpx_stream: unittest.mock.MagicMock,
+    mock_open_file: unittest.mock.MagicMock,
+) -> None:
+    download_file_path: pathlib.Path = tmp_path / "file.mp4"
+    download_url: str = "https://example.com"
 
-    assert True
+    mock_response = mocker.MagicMock()
+    mock_response.iter_bytes.return_value = [b"chunk1", b"chunk2"]
+    mock_httpx_stream.return_value.__enter__.return_value = mock_response
+
+    download._download_files(download_url, download_file_path)
+
+    mock_httpx_stream.assert_called_once_with("GET", download_url)
+    mock_response.iter_bytes.assert_called_once()
+
+    mock_open_file.assert_called_once_with(download_file_path, "wb")
+    handler = mock_open_file()
+    handler.write.assert_any_call(b"chunk1")
+    handler.write.assert_any_call(b"chunk2")
 
 
 def test__unarchive_files() -> None:
