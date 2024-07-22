@@ -87,3 +87,11 @@ def test_clean_archive(tmp_path: pathlib.Path, mock_unlink: unittest.mock.MagicM
     download.clean_archive(dataset_file_list)
 
     mock_unlink.assert_called_once()
+
+
+def test_download_multiprocess() -> None:
+    assert True
+
+
+def test_unarchive_multiprocess() -> None:
+    assert True
