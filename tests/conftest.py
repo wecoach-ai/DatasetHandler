@@ -5,6 +5,8 @@ import pytest
 
 
 DATASET_DIRECTORIES_NOT_EXISTS = ["dir1", "dir2"]
+CHUNKED_CONTENTS = [b"chunk1", b"chunk2"]
+DOWNLOAD_URL = "https://example.com"
 
 
 @pytest.fixture
