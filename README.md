@@ -67,3 +67,5 @@ poetry run pytest
 - [refactor] Add error handling.
 - [refactor] Add logging.
 - [feature] Publish as a PyPI package.
+- [test] Try to minimize fixtures by using more of pytest-mock.
+- [test] Increase code coverage to 40%.
