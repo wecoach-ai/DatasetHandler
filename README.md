@@ -68,3 +68,4 @@ poetry run pytest
 - [refactor] Add logging.
 - [test] Try to minimize fixtures by using more of pytest-mock.
 - [test] Increase code coverage to 40%.
+- [fix] Triage why coverage data is different on certain versions of python
