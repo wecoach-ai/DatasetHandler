@@ -6,8 +6,8 @@ DatasetHandler is a generic helper package for downloading datasets and performi
 This CLI program provides two main commands: `download` and `extract`, enabling easy management of datasets.
 
 ```shell
-$ poetry run python entrypoint.py
-Usage: entrypoint.py [OPTIONS] COMMAND [ARGS]...
+$ datasets
+Usage: datasets [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help  Show this message and exit.
