@@ -2,8 +2,8 @@
 
 ## Introduction
 
-DatasetHandler is a generic helper package for downloading datasets and performing any necessary preprocessing.
-This CLI program provides two main commands: `download` and `extract`, enabling easy management of datasets.
+DatasetHandler is a cli tool for downloading datasets and performing any necessary preprocessing.
+It provides two main commands: `download` and `extract`, enabling easy management of datasets.
 
 ```shell
 $ datasets
@@ -15,6 +15,18 @@ Options:
 Commands:
   download
   extract
+```
+
+## Installation
+
+```shell
+pip install dataset_handler
+```
+
+## Usage
+
+```shell
+datasets download https://lab.osai.ai/datasets/openttgames/data /data/dataset
 ```
 
 ## Performance
@@ -29,14 +41,6 @@ This parallel processing capability ensures **faster execution** of time-consumi
 - _Extracting Images from Videos_: The `extract_multiprocess` function processes multiple video files in parallel to extract frames, which is especially useful for large collections of video data.
 
 > By parallelizing these tasks, DatasetHandler ensures that data preparation steps are performed efficiently, saving valuable time and computational resources.
-
-## Scripts
-
-You can use the following script to run the cli in background
-
-```shell
-nohup bash bin/background.sh >> /data/logs/dataset_handler.log &
-```
 
 ## Contributing
 
