@@ -27,5 +27,4 @@ jobs:
       - name: Build packages
         run: poetry build
       - name: Upload to test pypi
-        # run: poetry publish --repository testpypi --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}
-        run: poetry publish --repository testpypi
+        run: poetry publish --repository testpypi --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}
