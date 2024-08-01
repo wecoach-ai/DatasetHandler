@@ -27,4 +27,4 @@ jobs:
       - name: Build packages
         run: poetry build
       - name: Upload to test pypi
-        run: poetry publish testpypi
+        run: poetry publish --build --repository testpypi
