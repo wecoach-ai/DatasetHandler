@@ -43,5 +43,5 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./reports/coverage.xml
-          flag: unittests-${{ matrix.python-version }}
+          flags: unittests-${{ matrix.python-version }}
           fail_ci_if_error: true
