@@ -2,14 +2,14 @@ import pathlib
 
 import click
 
-from src.download import (
+from .download import (
     clean_archive,
     download_multiprocess,
     generate_download_meta_data,
     setup_dataset_directory,
     unarchive_multiprocess,
 )
-from src.extract import extract_multiprocess, generate_extract_meta_data
+from .extract import extract_multiprocess, generate_extract_meta_data
 
 
 @click.group()

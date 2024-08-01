@@ -1,10 +1,13 @@
 [tool.poetry]
-name = "datasethandler"
-version = "0.1.0"
+name = "dataset_handler"
+version = "0.0.2"
 description = "Utility package for managing dataset"
 authors = ["onlinejudge95 <onlinejudge95@gmail.com>", "Shreshtth <shreshtthpersonal@gmail.com>"]
 readme = "README.md"
-package-mode = false
+packages = [{include = "src/dataset_handler"}]
+
+[tool.poetry.scripts]
+datasets = "src.dataset_handler.entrypoint:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9 || ^ 3.10 || ^3.11 || ^3.12"
@@ -21,6 +24,11 @@ mypy = {extras = ["reports"], version = "1.10.1"}
 pytest = "8.2.2"
 pytest-cov = "5.0.0"
 pytest-mock = "3.14.0"
+
+[[tool.poetry.source]]
+name = "testpypi"
+url = "https://test.pypi.org/legacy/"
+priority = "supplemental"
 
 [build-system]
 requires = ["poetry-core"]
@@ -59,12 +67,14 @@ html_report = "./reports/mypy/"
 
 [tool.coverage.run]
 branch = true
+omit = ["src/dataset_handler/entrypoint.py"]
 
 [tool.coverage.report]
-fail_under = 35
+fail_under = 35.00
+precision = 2
 
 [tool.pytest.ini_options]
-addopts = "--cov-config pyproject.toml --cov src --cov-report html:reports/pytest --cov-report xml:reports/coverage.xml --cov-report term"
+addopts = "--cov-config pyproject.toml --cov src/dataset_handler --cov-report html:reports/pytest --cov-report xml:reports/coverage.xml --cov-report term-missing"
 console_output_style = "progress"
 required_plugins = "pytest-cov pytest-mock"
 tmp_path_retention_policy = "none"

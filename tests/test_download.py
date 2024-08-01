@@ -4,7 +4,7 @@ import unittest
 import pytest
 import pytest_mock
 
-from src import download
+from src.dataset_handler import download
 from tests import conftest
 
 
