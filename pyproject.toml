@@ -1,10 +1,13 @@
 [tool.poetry]
-name = "datasethandler"
-version = "0.1.0"
+name = "dataset_handler"
+version = "0.0.1"
 description = "Utility package for managing dataset"
 authors = ["onlinejudge95 <onlinejudge95@gmail.com>", "Shreshtth <shreshtthpersonal@gmail.com>"]
 readme = "README.md"
-package-mode = false
+packages = [{include = "src/dataset_handler"}]
+
+[tool.poetry.scripts]
+datasets = "src.dataset_handler.cli:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9 || ^ 3.10 || ^3.11 || ^3.12"
