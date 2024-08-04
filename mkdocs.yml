@@ -1,0 +1,6 @@
+site_name: dataset-handler
+nav:
+  - Home: index.md
+  - Commands: commands.md
+theme:
+  name: material
