@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dataset-handler"
-version = "0.0.1"
+version = "0.1.0"
 description = "Utility package for managing dataset"
 authors = ["onlinejudge95 <onlinejudge95@gmail.com>", "Shreshtth <shreshtthpersonal@gmail.com>"]
 readme = "README.md"
