@@ -21,7 +21,11 @@ def cli() -> None:
 @cli.command()
 @click.argument("download_url", required=True)
 @click.argument("path", required=True)
-@click.option("--cleanup/--no-cleanup", default=False)
+@click.option(
+    "--cleanup/--no-cleanup",
+    default=False,
+    help="A flag to provide optionality for cleaning up of archived dataset (default=False)",
+)
 def download(download_url: str, path: str, cleanup: bool) -> None:
     """
     Download and unarchive dataset files.
@@ -31,8 +35,6 @@ def download(download_url: str, path: str, cleanup: bool) -> None:
         download_url: The base URL for downloading dataset files.
 
         path: The local directory path to save the downloaded dataset files.
-
-        cleanup: A flag to provide optionality for cleaning up of archived dataset.
     """
     setup_dataset_directory(path)
     meta_data: dict[str, pathlib.Path] = generate_download_meta_data(path, download_url)
@@ -58,9 +60,8 @@ def extract(path: str, scope: str, frame_cutoff: int) -> None:
     Extract images from video files based on the specified scope and frame cutoff.
 
     Args:
+
         path: The local directory path containing the dataset.
-        scope: The type of image extraction ("all", "selected", "smooth").
-        frame_cutoff: The cutoff frames for selected/smooth type extraction. (default=9)
     """
     meta_data: list[pathlib.Path] = generate_extract_meta_data(path)
     extract_multiprocess(meta_data, scope, frame_cutoff)

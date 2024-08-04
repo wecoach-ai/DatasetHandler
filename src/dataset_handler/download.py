@@ -82,6 +82,7 @@ def unarchive_multiprocess(meta_data: dict[str, pathlib.Path]) -> None:
     Unarchive downloaded files using multiprocessing.
 
     Args:
+
         meta_data: A dictionary mapping download URLs to local file paths.
     """
     with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -93,6 +94,7 @@ def _unarchive_files(archive_file_path: pathlib.Path) -> None:
     Helper function to unarchive a single file.
 
     Args:
+
         archive_file_path: The path to the archive file to be unarchived.
     """
     unarchive_file_path: pathlib.Path = archive_file_path.with_suffix("")
@@ -107,6 +109,7 @@ def clean_archive(file_list: list[pathlib.Path]) -> None:
     Saving memory resources, by deleting ".zip" files.
 
     Args:
+
         file_list: A list of local file paths, used to access ".zip" files.
     """
     for file_path in file_list:

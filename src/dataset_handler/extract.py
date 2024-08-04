@@ -12,9 +12,11 @@ def generate_extract_meta_data(path: str) -> list[pathlib.Path]:
     Generate metadata for extracting images from video files.
 
     Args:
+
         path: The local directory path containing the dataset.
 
     Returns:
+
         A list of video file paths to extract images from.
     """
     dataset_directory: pathlib.Path = pathlib.Path(path)
@@ -37,8 +39,11 @@ def extract_multiprocess(file_lists: list[pathlib.Path], scope: str, frame_cutof
     Extract images from video files using multiprocessing.
 
     Args:
+
         file_lists: A list of video file paths to extract images from.
+
         scope: The type of image extraction ("all", "selected", "smooth").
+
         frame_cutoff: The cutoff frames for selected/smooth type extraction.
     """
     with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -56,9 +61,12 @@ def _extract_images(video_file_path: pathlib.Path, frame_cutoff: int, strategy: 
     and the specified strategy. The extracted frames are saved as images in the "images" directory.
 
     Args:
+
         video_file_path: The path to the video file.
+
         frame_cutoff: The number of frames to include before and after each annotated event.
                       This is required only if the strategy is "selected" or "smooth".
+
         strategy:   The extraction strategy. Can be "all", "selected", or "smooth".
                     "all" extracts all frames.
                     "selected" extracts frames around annotated events.
@@ -99,13 +107,17 @@ def _get_frame_indices(file_path: pathlib.Path, num_frames: int, strategy: str) 
     `f+num_frames*multiplier`, where `multiplier` is determined based on the strategy and event type.
 
     Args:
+
         file_path: The path to the JSON file(events_markup) containing event annotations.
+
         num_frames: The number of frames to include before and after each annotated event.
+
         strategy: The extraction strategy. Can be "selected" or "smooth".
                   "selected" includes frames directly around the annotated event.
                   "smooth" applies a multiplier based on the event type.
 
     Returns:
+
         A set of frame indices to extract, covering the range around each annotated event.
     """
     multiplier: int
